@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Add Offender to Gang</title>
+</head>
+<body>
+<h1>Add Offender to Gang</h1>
+
+<h2>Offender Information</h2>
+<p>Last Name: <span th:text="${offender.lastname}"></span></p>
+<p>First Name: <span th:text="${offender.firstname}"></span></p>
+<p>Nickname: <span th:text="${offender.nickname}"></span></p>
+
+
+<h2>Available Gangs</h2>
+<form th:action="@{/offenders/{offId}/join-gang(offId=${offender.offId})}" method="post">
+  <label for="gangSelect">Select a Gang:</label>
+  <select id="gangSelect" name="id">
+    <option value="0">Without Gang</option>
+    <option th:each="gang : ${allGangs}" th:value="${gang.id}" th:text="${gang.name}"></option>
+  </select>
+  <button type="submit">Join Gang</button>
+</form>
+
+
+
+<p><a th:href="@{/offenders/{offId}(offId=${offender.offId})}">Back to Offender Details</a></p>
+</body>
+</html>
+

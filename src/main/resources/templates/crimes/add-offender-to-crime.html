@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Add Offender to Crime</title>
+</head>
+<body>
+<h1>Add Offender to Crime</h1>
+<form th:action="@{/crime/{id}/add-offender(id=${crime.id})}" method="post">
+  <select name="offId">
+    <option th:each="offender : ${activeOffenders}" th:value="${offender.offId}" th:text="${offender.firstname + ' ' + offender.lastname}"></option>
+  </select>
+  <button type="submit">Add Offender</button>
+</form>
+</body>
+</html>
+

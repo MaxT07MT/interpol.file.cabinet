@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Criminal Gang Details</title>
+  <style>
+    body {
+      background-color: red;
+      color: white;
+      font-family: 'FreeMono', monospace;
+      font-size: 24px;
+      letter-spacing: 3px;
+      margin: 0;
+      padding: 0;
+    }
+    .page {
+      width: 100vw;
+      height: 100vh;
+      background-color: #000;
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-start;
+      padding: 20px;
+      box-sizing: border-box;
+
+      border-radius: 25px;
+    }
+    .table-container {
+      display: flex;
+      width: 100%;
+    }
+    .table-column {
+      flex: 1;
+      padding: 10px;
+    }
+    .photo-container {
+      text-align: right;
+      margin-left: 20px;
+      position: relative;
+    }
+    .criminalGang-logo {
+      width: 340px;
+      height: auto;
+      max-height: 900px;
+      position: absolute;
+      border: 15px solid silver;
+      top: 0cm;
+      right: 1cm;
+    }
+    .action-buttons {
+      margin-top: 1cm;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    .upload-form {
+      margin-left: 1cm;
+    }
+    .popup {
+      display: none;
+      position: absolute;
+      background-color: red;
+      border: 1px solid #333;
+      padding: 10px;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+<h1 align="center"><span th:text="${criminalGang.name}"></span></h1>
+<div class="page">
+  <div class="table-container">
+    <div class="table-column">
+      <table>
+        <tr><th>Last Name:</th> <td><span th:text="${criminalGang.name}"></span></td></tr>
+        <tr><th>Location:</th> <td><span th:text="${criminalGang.location}"></span></td></tr>
+        <tr><th>Year of Foundation:</th> <td><span th:text="${#dates.format(criminalGang.yearOfFoundation, 'yyyy')}"></span></td></tr>
+        <tr><th>Description:</th> <td><span th:text="${criminalGang.description}"></span></td></tr>
+
+        <tr><th>Members:</th>
+          <td>
+            <button class="popup-button" onclick="togglePopup('members-popup')">Members</button>
+            <div id="members-popup" class="popup">
+              <ul class="popup-content">
+                <li th:each="offender : ${criminalGang.offenders}">
+                  <a th:href="@{/offenders/{offId}(offId=${offender.offId})}" class="offender-link">
+                    <span th:text="${offender.firstname} + ' ' + ${offender.lastname}+ ' ' + ${offender.status} +' ' + ${offender.archived == null || !offender.archived ? 'Active' : 'No Active'}"></span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <div class="action-buttons">
+       <tr> <a th:href="@{/criminalGangs/edit/{id}(id=${criminalGang.id})}">UPDATE</a></tr>
+        <p>
+
+        </p>
+        <tr><a th:href="@{/criminalGangs/delete/{id}(id=${criminalGang.id})}">DELETE</a></tr>
+        <p>
+
+        </p>
+
+
+        <tr><form class="upload-form" th:action="@{/criminalGangs/{id}/uploadLogo(id=${criminalGang.id})}" method="post" enctype="multipart/form-data">
+          <input type="file" name="logo" accept="image/*">
+          <button type="submit">Upload Photo</button>
+        </form></tr>
+      </div>
+    </div>
+
+    <div class="table-column">
+      <div class="photo-container">
+        <img th:if="${criminalGang.logo != null}" th:src="@{/criminalGangs/{id}/logo(id=${criminalGang.id})}" alt="Criminal Gang Logo" class="criminalGang-logo">
+
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+
+  function togglePopup(popupId) {
+    const popup = document.getElementById(popupId);
+    popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+</body>
+</html>

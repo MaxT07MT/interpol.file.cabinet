@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Criminal Gangs Archive</title>
+</head>
+<body>
+<h1>Criminal Gangs Archive</h1>
+<table>
+  <tr>
+
+    <th>Name</th>
+    <th>Info</th>
+  </tr>
+  <tr th:each="criminalGang : ${archivedGangs}">
+    <td th:text="${criminalGang.name}"></td>
+    <td>
+      <a th:href="@{/criminalGangs/{id}(id=${criminalGang.id})}">INFO</a>
+
+    </td>
+  </tr>
+</table>
+<a th:href="@{/criminalGangs/create}">Create New Gang</a>
+</body>
+</html>

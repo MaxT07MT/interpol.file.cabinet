@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Crime Details</title>
+  <style>
+    body {
+      background-color: silver;
+      color: white;
+      font-family: 'FreeMono', monospace;
+      font-size: 24px;
+      letter-spacing: 3px;
+      margin: 0;
+      padding: 0;
+    }
+    .page {
+      width: 100vw;
+      height: 100vh;
+      background-color: black;
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-start;
+      padding: 20px;
+      box-sizing: border-box;
+
+      border-radius: 25px;
+    }
+    .table-container {
+      display: flex;
+      width: 100%;
+    }
+    .table-column {
+      flex: 1;
+      padding: 10px;
+    }
+    .photo-container {
+      text-align: right;
+      margin-left: 20px;
+      position: relative;
+    }
+    .offender-photo {
+      width: 340px;
+      height: auto;
+      max-height: 900px;
+      position: absolute;
+      border: 15px solid silver;
+      top: 0cm;
+      right: 1cm;
+    }
+    .action-buttons {
+      margin-top: 1cm;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    .upload-form {
+      margin-left: 1cm;
+    }
+    .popup {
+      display: none;
+      position: absolute;
+      background-color: silver;
+      border: 3px solid black;
+      padding: 10px;
+      z-index: 1;
+    }
+    .popup-button {
+      background-color: white;
+      color: black;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<div th:if="${crime.crimeDanger}" class="dangerous-header">
+  Dangerous Crime
+</div>
+<h1 align="center"><span th:text="${crime.name}"></span></h1>
+<div class="page">
+  <table th:color="red"><td><h1>  <div th:if="${crime.crimeDanger}" class="dangerous-header">
+    Dangerous Crime
+  </div></h1></td></table>
+
+  <div class="table-container">
+    <div class="table-column">
+      <table>
+        <tr><th>Name:</th> <td><span th:text="${crime.name}"></span></td></tr>
+        <tr><th>Solved:</th>
+          <td>
+            <span th:if="${crime.crimeSolved}">Дело раскрыто</span>
+            <span th:unless="${crime.crimeSolved}">Следствие продолжается</span>
+          </td>
+        </tr>
+        <tr><th>Place:</th> <td><span th:text="${crime.place}"></span></td></tr>
+        <tr><th>Date of Crime:</th> <td><span th:text="${crime.dateOfCrime != null ? #dates.format(crime.dateOfCrime, 'yyyy-MM-dd') : ''}"></span></td></tr>
+        <tr><th>Description:</th>
+          <td>
+            <button class="popup-button" onclick="togglePopup('description-popup')">Description</button>
+            <div id="description-popup" class="popup">
+              <span th:text="${crime.description}" class="popup-content"></span>
+            </div>
+          </td>
+        </tr>
+        <tr><th>Offenders:</th>
+          <td>
+            <button class="popup-button" onclick="togglePopup('offender-list-popup')">Offender List</button>
+            <div id="offender-list-popup" class="popup">
+              <ul class="popup-content">
+                <li th:each="offender : ${crime.offenders}">
+                  <a th:href="@{/offenders/{offId}(offId=${offender.offId})}" class="offender-link">
+                    <span th:text="${offender.firstname + ' ' + offender.lastname}"></span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+      </table>
+      <div class="action-buttons">
+        <a th:href="@{/crime/edit/{id}(id=${crime.id})}">UPDATE</a>
+        <p>
+        <form th:action="@{/crime/{id}/toggleArchive(id=${crime.id})}" method="post">
+          <button type="submit">
+            <span th:text="${crime.crimeArchived} ? 'Replace from Archive' : 'Add to Archive'"></span>
+          </button>
+        </form>
+        </p>
+        <a th:href="@{/crime/delete/{id}(id=${crime.id})}">DELETE</a>
+        <a th:href="@{/crime/{id}/add-offender(id=${crime.id})}">Add Offender</a>
+        <form class="upload-form" th:action="@{/crime/{id}/uploadPhotoCrime(id=${crime.id})}" method="post" enctype="multipart/form-data">
+          <input type="file" name="photoCrime" accept="image/*">
+          <button type="submit">Upload Photo</button>
+        </form>
+      </div>
+    </div>
+    <div class="table-column">
+      <div class="photo-container">
+        <img th:if="${crime.photoCrime != null}" th:src="@{/crime/{id}/photoCrime(id=${crime.id})}" alt="Crime Photo" class="offender-photo">
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function togglePopup(popupId) {
+    const popup = document.getElementById(popupId);
+    popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+  }
+</script>
+</body>
+</html>

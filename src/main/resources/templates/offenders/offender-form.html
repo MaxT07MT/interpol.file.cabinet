@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Create/Edit Offender</title>
+</head>
+<body>
+<h1>Create/Edit Offender</h1>
+<form th:object="${offender}" th:action="${actionUrl}" method="post" enctype="multipart/form-data">
+  <input type="hidden" th:field="*{offId}" />
+  <label>Last Name: <input type="text" th:field="*{lastname}" /></label><br />
+  <label>First Name: <input type="text" th:field="*{firstname}" /></label><br />
+  <label>Nickname: <input type="text" th:field="*{nickname}" /></label><br />
+  <label>Status:</label>
+  <select th:field="*{status}">
+    <option th:each="status : ${T(org.file.cabinet.interpol.file.cabinet.model.OffenderStatus).values()}"
+            th:value="${status}"
+            th:text="${status}"></option>
+
+  </select><br />
+  <label>Height: <input type="number" th:field="*{height}" /></label><br />
+  <label>Weight: <input type="number" th:field="*{weight}" /></label><br />
+  <label>Color of Eyes: <input type="text" th:field="*{colorOfEyes}" /></label><br />
+  <label>Color of Hair: <input type="text" th:field="*{colorOfHair}" /></label><br />
+  <label>Birthday: <input type="date" th:field="*{birthday}" /></label><br />
+  <label>Nationality: <input type="text" th:field="*{nationality}" /></label><br />
+  <label>Last Location: <input type="text" th:field="*{lastLocation}" /></label><br />
+  <label>Last Criminal: <input type="text" th:field="*{lastCriminal}" /></label><br />
+  <label>Languages: <input type="text" th:field="*{languages}" /></label><br />
+  <label>Main Criminal Profession: <input type="text" th:field="*{mainCriminalProfession}" /></label><br />
+  <label>Description: <input type="text" th:field="*{description}" /></label><br />
+  <label>Leave:</label>
+  <select th:field="*{leave}">
+    <option value="true">Leave</option>
+    <option value="false">Died</option>
+  </select><br />
+  <input type="hidden" th:field="*{photo}" /></label><br />
+  <input type="hidden" th:field="*{archived}" /></label><br />
+  <input type="hidden" th:if="${offender.gang}" th:value="${offender.gang.id}" name="gang" />
+  <input type="submit" value="Submit" />
+</form>
+</body>
+</html>
