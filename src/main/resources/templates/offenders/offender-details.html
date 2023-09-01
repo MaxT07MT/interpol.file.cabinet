@@ -4,7 +4,7 @@
   <title>Offender Details</title>
   <style>
     body {
-      background-color: silver;
+      background-color: black;
       color: white;
       font-family: 'FreeMono', monospace;
       font-size: 22px;
@@ -25,19 +25,19 @@
     }
     .table-container {
       display: flex;
-      width: 80%;
-      border: 1px solid white; /* Added border for visibility */
-      margin: 0 auto; /* Center the table */
-      background-color: black; /* Set background color */
+      width: 100%;
+      border: 1px solid white;
+      margin: 0 auto;
+      background-color: black;
     }
     .table-column {
       flex: 1;
       padding: 10px;
-      border-right: 1px solid white; /* Added border for visibility */
-      border-bottom: 1px solid white; /* Added border for visibility */
+      border-right: 1px solid white;
+      border-bottom: 1px solid white;
     }
     .table-column:last-child {
-      border-right: none; /* Remove right border for the last column */
+      border-right: none;
     }
     .table {
       width: 100%;
@@ -45,7 +45,7 @@
     }
     .table th,
     .table td {
-      border: 1px solid white; /* Added border for visibility */
+      border: 1px solid white;
       padding: 8px;
       text-align: left;
     }
@@ -60,7 +60,7 @@
       height: auto;
       max-height: 900px;
       position: absolute;
-      border: 15px solid silver;
+      border: 15px solid blue;
       top: 0cm;
       right: 1cm;
     }
@@ -72,14 +72,16 @@
       cursor: pointer;
       margin-right: 5px;
     }
-
-    .upload-form {
-      margin-top: 1cm;
+    .header {
+      background-color: blue;
+      padding: 6px;
+      text-align: right;
     }
+
     .popup {
       display: none;
       position: absolute;
-      background-color: red;
+      background-color: blue;
       border: 1px solid #333;
       padding: 10px;
       z-index: 1;
@@ -92,36 +94,51 @@
       cursor: pointer;
     }
     .dangerous-banner {
-      background-color: red;
+      background-color: blue;
       color: white;
       text-align: center;
       padding: 10px;
-      font-size: 24px;
+      font-size: 36px;
       margin-bottom: 15px;
+    }
+    .error-message {
+      background-color: red;
+      color: white;
+    }
+    .footer {
+      background-color: blue;
+      padding: 2px;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    .footer-buttons {
+      margin-top: 20px;
+      display: flex;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+      margin-right: 20px;
+    }
+
+
+    .footer-buttons a + a {
+      margin-left: 20px;
     }
 
   </style>
 </head>
 <body>
+<div class="header">
 <h1 align="center"><span th:text="${offender.firstname} + ' ' + ${offender.lastname}"></span></h1>
+</div>
 <div th:if="${isDanger}" class="dangerous-banner">
   ОСОБО ОПАСЕН
 </div>
 
-
-
 </div>
-
-
-
-
-
-
-
-
-
-
-
 <div class="table-container">
   <div class="table-column">
     <table class="table">
@@ -140,7 +157,7 @@
   </div>
   <div class="table-column">
     <div class="photo-container">
-      <img th:if="${offender.photo != null}" th:src="@{/offenders/{offId}/photo(offId=${offender.offId})}" alt="Offender Photo" class="offender-photo">
+      <img th:if="${offender.photo != null}" th:src="@{/offender/{offId}/photo(offId=${offender.offId})}" alt="Offender Photo" class="offender-photo">
     </div>
   </div>
 </div>
@@ -188,7 +205,7 @@
         <th>Gang:</th>
         <td>
           <span th:if="${offender.gang != null}">
-            <a th:href="@{/criminalGangs/{id}(id=${offender.gang.id})}" class="gang-link">
+            <a th:href="@{/criminalGang/{id}(id=${offender.gang.id})}" class="gang-link">
               <span th:text="${offender.gang.name}"></span>
             </a>
           </span>
@@ -201,18 +218,18 @@
     </table>
   </div>
   <div class="table-column">
-    <table class="table" style="border: none;"> <!-- Table for action buttons -->
+    <table class="table" style="border: none;">
       <tr>
         <th colspan="2">Actions:</th>
       </tr>
       <tr>
         <td>
-          <form th:action="@{/offenders/edit/{offId}(offId=${offender.offId})}" method="get">
+          <form th:action="@{/offender/edit/{offId}(offId=${offender.offId})}" method="get">
             <button type="submit" class="action-button">UPDATE</button>
           </form>
         </td>
         <td>
-          <form th:action="@{/offenders/{offId}/toggleArchive(offId=${offender.offId})}" method="post">
+          <form th:action="@{/offender/{offId}/toggleArchive(offId=${offender.offId})}" method="post">
             <button type="submit" class="action-button">
               <span th:text="${offender.archived} ? 'Replace from Archive' : 'Add to Archive'"></span>
             </button>
@@ -221,26 +238,21 @@
       </tr>
       <tr th:if="${offender.archived}">
         <td colspan="2">
-          <form th:action="@{/offenders/delete/{offId}(offId=${offender.offId})}" method="get">
+          <form th:action="@{/offender/delete/{offId}(offId=${offender.offId})}" method="get">
             <button type="submit" class="action-button">DELETE</button>
           </form>
         </td>
       </tr>
-      <tr>
-        <td colspan="2">
-          <a th:href="@{/offenders/{offId}/gangs(offId=${offender.offId})}" class="action-button">Select Gang</a>
-        </td>
-      </tr>
+      <div class="error-message">
+        <tr th:if="${deleteErrorMessage}" class="error-message">
+          <td colspan="3">
+            <p th:text="${deleteErrorMessage}"></p>
+          </td>
+        </tr>
+      </div>
     </table>
-    <table class="table" style="border: none;"> <!-- Table for photo buttons -->
-      <tr>
-        <td colspan="2">
-          <form class="upload-form" th:action="@{/offenders/{offId}/uploadPhoto(offId=${offender.offId})}" method="post" enctype="multipart/form-data">
-            <input type="file" name="photo" accept="image/*">
-            <button type="submit" class="action-button">Upload Photo</button>
-          </form>
-        </td>
-      </tr>
+    <table class="table" style="border: none;">
+
     </table>
   </div>
 
@@ -252,5 +264,11 @@
     popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
   }
 </script>
+<div class="footer">
+  <div class="footer-buttons">
+    <a th:href="@{/offender}"><h2>BACK TO OFFENDERS LIST</h2></a>
+    <a href="/"><h2>BACK TO MAIN</h2></a>
+  </div>
+</div>
 </body>
 </html>

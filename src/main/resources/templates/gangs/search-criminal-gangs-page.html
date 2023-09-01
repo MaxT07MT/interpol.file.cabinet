@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Criminal Gangs List</title>
+  <title>Search Page</title>
   <style>
     body {
       background-color: black;
@@ -71,6 +70,7 @@
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 2px;
+      margin-right: 20px;
     }
 
     th, td {
@@ -83,50 +83,71 @@
       background-color: blue;
     }
 
-    .error-message {
-      background-color: red;
-      color: white;
-    }
   </style>
 </head>
 <body>
+
 <div class="header">
-  <div class="logo">CRIMINAL GANGS LIST</div>
+  <div class="logo">SEARCH CRIMES</div>
 </div>
+
 <div class="content">
+  <div class="right">
+    <table>
+      <tr>
+        <td>
+          <H4>NAME:</H4>
+        </td>
+        <td>
+          <form method="get" action="/criminalGang/searchByName">
+            <input type="text" name="startingLetters" id="name" placeholder="Input Starting Letters" />
+            <button type="submit">Search</button>
+          </form>
+        </td>
+
+      <tr>
+        <td>
+          <H4>ARCHIVED:</H4>
+        </td>
+        <td>
+          <form action="/criminalGang/archive" method="get">
+            <button type="submit">Search</button>
+          </form>
+        </td>
+        <td>
+          <H4>NOT_ARCHIVED:</H4>
+        </td>
+        <td>
+          <form action="/criminalGang/notArchived" method="get">
+            <button type="submit">Search</button>
+          </form>
+        </td>
+      </tr>
+
+    </table>
+  </div>
+
   <div class="left">
     <table>
       <tr>
         <th>NAME</th>
+        <th>OFFENDERS</th>
         <th>INFO</th>
       </tr>
-      <tr th:each="gang, stat : ${criminalGangs}" th:if="${__${stat.index}__ % 2 == 0}">
-        <td th:text="${gang.name}"></td>
+      <tr th:each="criminalGangs : ${criminalGangs}">
+        <td th:text="${criminalGangs.name}"></td>
+        <td th:text="${criminalGangs.offenders.size()}"></td>
         <td>
-          <a th:href="@{/criminalGang/{id}(id=${gang.id})}">INFO</a>
-        </td>
-      </tr>
-    </table>
-  </div>
-  <div class="right">
-    <table>
-      <tr>
-      <th>NAME</th>
-      <th>INFO</th>
-      </tr>
-      <tr th:each="gang, stat : ${criminalGangs}" th:if="${__${stat.index}__ % 2 != 0}">
-        <td th:text="${gang.name}"></td>
-        <td>
-          <a th:href="@{/criminalGang/{id}(id=${gang.id})}">INFO</a>
+          <a th:href="@{/criminalGang/{id}(id=${criminalGangs.id})}">INFO</a>
         </td>
       </tr>
     </table>
   </div>
 </div>
+</div>
 <div class="footer">
   <div class="footer-buttons">
-    <a th:href="@{/criminalGang/create}"><h2>CREATE NEW GANG</h2></a>
-    <a href="/criminalGang/searchPage"><h2>SEARCH PAGE</h2></a>
+    <a th:href="@{/criminalGang}"><h2>BACK TO CRIMINAL GANGS LIST</h2></a>
     <a href="/"><h2>BACK TO MAIN</h2></a>
   </div>
 </div>

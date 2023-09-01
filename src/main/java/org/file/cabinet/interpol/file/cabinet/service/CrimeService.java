@@ -1,20 +1,27 @@
 package org.file.cabinet.interpol.file.cabinet.service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.file.cabinet.interpol.file.cabinet.model.Crime;
+import org.file.cabinet.interpol.file.cabinet.model.Offender;
 
 public interface CrimeService {
-  List<Crime> findAll();
-  List<Crime> findByCrimeArchivedFalseOrCrimeArchivedIsNull();
-  List<Crime> findByCrimeArchivedTrue();
-  List<Crime> findByCrimeSolvedFalseOrCrimeSolvedIsNull();
-  List<Crime> findByCrimeSolvedTrue();
-  List<Crime> findByCrimeDangerFalseOrCrimeDangerIsNull();
-  List<Crime> findByCrimeDangerTrue();
-  Crime findById(long id);
+  List<Crime> getAll();
+  List<Crime> getByCrimeArchivedFalseOrCrimeArchivedIsNull();
+  List<Crime> getByCrimeArchivedTrue();
+  List<Crime> getByCrimeSolvedFalseOrCrimeSolvedIsNull();
+  List<Crime> getByCrimeSolvedTrue();
+  List<Crime> getByCrimeDangerFalseOrCrimeDangerIsNull();
+  List<Crime> getByCrimeDangerTrue();
+  List<Crime> getByCrimeDanger(Boolean crimeDanger);
+  List<Crime> getByDateOfCrimeBetween(Date startDate, Date endDate);
 
-  Crime create(Crime crime);
-  Crime update(Crime crime);
-  void delete(long id);
+  Crime getById(long id);
+
+  Crime createCrime(Crime crime);
+  Crime updateCrime(Crime crime);
+  void deleteCrime(long id);
+
 
 }

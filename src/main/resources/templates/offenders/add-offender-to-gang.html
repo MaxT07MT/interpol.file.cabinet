@@ -2,29 +2,103 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <title>Add Offender to Gang</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    .header {
+      background-color: blue;
+      padding: 6px;
+      text-align: right;
+    }
+
+    .logo {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .content {
+      display: flex;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+      margin-right: 20px;
+    }
+
+    .footer {
+      background-color: blue;
+      padding: 2px;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    .footer-buttons {
+      margin-top: 20px;
+      display: flex;
+    }
+
+    .footer-buttons a + a {
+      margin-left: 20px;
+    }
+
+
+    table {
+      width: 50%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      align-content: center;
+    }
+
+    th, td {
+      border: 1px solid white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: blue;
+    }
+
+  </style>
 </head>
 <body>
-<h1>Add Offender to Gang</h1>
+<div class="header">
+  <div class="logo">ADD OFFENDER TO GANG</div>
+</div>
+<div class="content">
 
-<h2>Offender Information</h2>
-<p>Last Name: <span th:text="${offender.lastname}"></span></p>
-<p>First Name: <span th:text="${offender.firstname}"></span></p>
-<p>Nickname: <span th:text="${offender.nickname}"></span></p>
+    <table class="table" align="center" style="border: none;">
+<tr><td><p>Last Name:</td><td><span th:text="${offender.lastname}"></span></p></td></tr>
+      <tr><td><p>First Name:</td><td> <span th:text="${offender.firstname}"></span></p></td></tr>
 
 
-<h2>Available Gangs</h2>
-<form th:action="@{/offenders/{offId}/join-gang(offId=${offender.offId})}" method="post">
+ <tr>
+   <td><h2>Available Gangs</h2></td>
+<td><form th:action="@{/offender/{offId}/join-gang(offId=${offender.offId})}" method="post">
   <label for="gangSelect">Select a Gang:</label>
   <select id="gangSelect" name="id">
     <option value="0">Without Gang</option>
-    <option th:each="gang : ${allGangs}" th:value="${gang.id}" th:text="${gang.name}"></option>
+    <option th:each="gang : ${criminalGangs}" th:value="${gang.id}" th:text="${gang.name}"></option>
   </select>
   <button type="submit">Join Gang</button>
-</form>
-
-
-
-<p><a th:href="@{/offenders/{offId}(offId=${offender.offId})}">Back to Offender Details</a></p>
+</form></td>
+ </tr>
+    </table>
+</div>
+<div class="footer">
+  <div class="footer-buttons">
+    <a th:href="@{/offender/{offId}(offId=${offender.offId})}"><h2>BACK TO OFFENDER DETAILS</h2></a>
+  </div>
+</div>
 </body>
 </html>
 

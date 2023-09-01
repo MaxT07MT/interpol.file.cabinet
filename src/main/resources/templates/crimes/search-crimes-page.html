@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Search Page</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    .header {
+      background-color: blue;
+      padding: 6px;
+      text-align: right;
+    }
+
+    .logo {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .content {
+      display: flex;
+    }
+
+    .left {
+      flex: 1;
+      width: 50%;
+      padding: 2px;
+      box-sizing: border-box;
+    }
+
+    .right {
+      flex: 1;
+      width: 50%;
+      padding: 2px;
+      box-sizing: border-box;
+      text-align: right;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+      margin-right: 20px;
+    }
+
+    .footer {
+      background-color: blue;
+      padding: 2px;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    .footer-buttons {
+      margin-top: 20px;
+      display: flex;
+    }
+
+    .footer-buttons a + a {
+      margin-left: 20px;
+    }
+
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2px;
+      margin-right: 20px;
+    }
+
+    th, td {
+      border: 1px solid white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: blue;
+    }
+
+    .error-message {
+      background-color: red;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">SEARCH CRIMES</div>
+</div>
+
+<div class="content">
+  <div class="right">
+    <table>
+      <tr>
+
+      </tr>
+        <tr>
+          <form action="/crime/searchByDateOfCrime" method="post">
+            <td><H4>START_DATE:</H4></td>
+            <td><input type="date" id="startDate" name="startDate"></td>
+            <td><H4>END_DATE:</H4></td>
+            <td><input type="date" id="endDate" name="endDate">
+              <button type="submit">Search</button></td>
+          </form>
+        </tr>
+        <tr>
+          <td>
+            <H4>DANGER:</H4>
+          </td>
+          <td>
+            <form action="/crime/searchByCrimeDanger" method="post">
+              <button type="submit">Search</button>
+            </form>
+          </td>
+          <td>
+            <H4>NOT_DANGER:</H4>
+          </td>
+          <td>
+            <form action="/crime/searchByCrimeNotDanger" method="post">
+              <button type="submit">Search</button>
+            </form>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <H4>ARCHIVED:</H4>
+          </td>
+          <td>
+            <form action="/crime/archive" method="get">
+              <button type="submit">Search</button>
+            </form>
+          </td>
+          <td>
+            <H4>NOT_ARCHIVED:</H4>
+          </td>
+          <td>
+            <form action="/crime/notArchived" method="get">
+              <button type="submit">Search</button>
+            </form>
+          </td>
+        </tr>
+
+      </table>
+  </div>
+
+  <div class="left">
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Crime Danger</th>
+    <th>Date of Crime</th>
+    <th>Actions</th>
+  </tr>
+  <tr th:each="crime : ${crimes}">
+    <td th:text="${crime.name}"></td>
+    <td th:text="${crime.crimeDanger != null ? (crime.crimeDanger ? 'Dangerous' : 'Not Dangerous') : 'Unknown'}"></td>
+
+    <td th:text="${#dates.format(crime.dateOfCrime, 'yyyy-MM-dd')}"></td>
+    <td>
+      <a th:href="@{/crime/{crimeId}(crimeId=${crime.id})}">INFO</a>
+    </td>
+  </tr>
+</table>
+  </div>
+</div>
+</div>
+<div class="footer">
+  <div class="footer-buttons">
+    <a th:href="@{/crime}"><h2>BACK TO CRIMES LIST</h2></a>
+    <a href="/"><h2>BACK TO MAIN</h2></a>
+  </div>
+</div>
+</body>
+</html>

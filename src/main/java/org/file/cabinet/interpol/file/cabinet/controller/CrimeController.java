@@ -1,12 +1,14 @@
 package org.file.cabinet.interpol.file.cabinet.controller;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import org.file.cabinet.interpol.file.cabinet.model.Crime;
 import org.file.cabinet.interpol.file.cabinet.model.Offender;
 import org.file.cabinet.interpol.file.cabinet.service.CrimeService;
 import org.file.cabinet.interpol.file.cabinet.service.OffenderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,25 +33,27 @@ public class CrimeController {
     this.offenderService = offenderService;
   }
   @GetMapping("/notArchived")
-  public String getAllCrime(Model model, @RequestParam(required = false) String error) {
-    List<Crime> notArchiveCrimes = crimeService.findByCrimeArchivedFalseOrCrimeArchivedIsNull();
-    model.addAttribute("notArchiveCrimes", notArchiveCrimes);
-    if ("deleteNotArchived".equals(error)) {
-      model.addAttribute("deleteErrorMessage", "Нельзя удалять  преступление, пока оно не перемещено в архив");
-    }
-    return "crimes/crime-list";
+  public String getAllCrime(Model model) {
+    List<Crime> crimes = crimeService.getByCrimeArchivedFalseOrCrimeArchivedIsNull();
+    model.addAttribute("crimes", crimes);
+    return "crimes/search-crimes-page";
   }
   @GetMapping("/archive")
   public String getArchiveCrimes(Model model, @RequestParam(required = false) String error){
-    List<Crime> archivedCrimes = crimeService.findByCrimeArchivedTrue();
-    model.addAttribute("archivedCrimes", archivedCrimes);
-    return "crimes/crime-archive";
+    List<Crime> crimes = crimeService.getByCrimeArchivedTrue();
+    model.addAttribute("crimes", crimes);
+    return "crimes/search-crimes-page";
   }
 
-
+  @GetMapping()
+  public String getAllCrimes(Model model){
+    List<Crime> crimes = crimeService.getAll();
+    model.addAttribute("crimes", crimes);
+    return "crimes/crime-list";
+  }
   @GetMapping("/{id}")
   public String getCrimeById(@PathVariable long id, Model model) {
-    Crime crime = crimeService.findById(id);
+    Crime crime = crimeService.getById(id);
     model.addAttribute("crime", crime);
     return "crimes/crime-details";
   }
@@ -59,27 +63,27 @@ public class CrimeController {
   public String createCrimeForm(Model model ) {
     model.addAttribute("crime", new Crime());
     model.addAttribute("actionUrl", "/crime/create");
-    return "crimes/crime-form";
+    return "crimes/crime-create";
   }
 
   @PostMapping("/create")
   public String createCrime(@ModelAttribute Crime crime) {
-    crimeService.create(crime);
-    return "redirect:/crime/notArchived";
+    crimeService.createCrime(crime);
+    return "redirect:/crime";
   }
   @PostMapping("/{id}/uploadPhotoCrime")
   public String createCrimePhoto(@PathVariable long id, @RequestParam("photoCrime") MultipartFile photoFile) throws IOException {
-    Crime crime = crimeService.findById(id);
+    Crime crime = crimeService.getById(id);
 
     if (!photoFile.isEmpty()) {
       crime.setPhotoCrime(photoFile.getBytes());
-      crimeService.update(crime);
+      crimeService.updateCrime(crime);
     }
-    return "redirect:/crime/" + id;
+    return "redirect:/crime/edit/{id}";
   }
   @GetMapping("/{id}/photoCrime")
   public ResponseEntity<byte[]> getCrimePhotoById(@PathVariable long id) {
-    Crime crime = crimeService.findById(id);
+    Crime crime = crimeService.getById(id);
 
     if (crime.getPhotoCrime() != null) {
       HttpHeaders headers = new HttpHeaders();
@@ -93,43 +97,43 @@ public class CrimeController {
 
   @GetMapping("/edit/{id}")
   public String editCrimeForm(@PathVariable long id, Model model) {
-    Crime crime = crimeService.findById(id);
+    Crime crime = crimeService.getById(id);
     model.addAttribute("crime", crime);
     model.addAttribute("actionUrl", "/crime/edit/" + id);
-    return "crimes/crime-form";
+    return "crimes/crime-edit";
   }
   @PostMapping("/edit/{id}")
   public String editCrime(@PathVariable long id, @ModelAttribute Crime crime) {
-    crimeService.update(crime);
+    crimeService.updateCrime(crime);
     return "redirect:/crime/{id}";
   }
 
   @GetMapping("/delete/{id}")
   public String deleteCrime(@PathVariable long id) {
-    crimeService.delete(id);
-    return "redirect:/crime/archived";
+    crimeService.deleteCrime(id);
+    return "redirect:/crime";
   }
 
   @GetMapping("/{id}/add-offender")
   public String getOffenderToCrime(@PathVariable long id, Model model) {
-    Crime crime = crimeService.findById(id);
-    List<Offender> activeOffenders = offenderService.findByArchivedFalseOrArchivedIsNull();
+    Crime crime = crimeService.getById(id);
+    List<Offender> offenders = offenderService.getAll();
     model.addAttribute("crime", crime);
-    model.addAttribute("activeOffenders", activeOffenders);
+    model.addAttribute("offenders", offenders);
     return "crimes/add-offender-to-crime";
   }
 
   @PostMapping("/{id}/add-offender")
   public String addOffenderToCrime(@PathVariable long id, @RequestParam long offId) {
-    Crime crime = crimeService.findById(id);
+    Crime crime = crimeService.getById(id);
     Offender offender = offenderService.getOffenderById(offId);
     crime.getOffenders().add(offender);
-    crimeService.update(crime);
-    return "redirect:/crime/" + id;
+    crimeService.updateCrime(crime);
+    return "redirect:/crime/edit/{id}";
   }
   @PostMapping("/{id}/toggleArchive")
   public String crimeToggleArchive(@PathVariable long id) {
-    Crime crime = crimeService.findById(id);
+    Crime crime = crimeService.getById(id);
     if (crime != null) {
       Boolean archived = crime.getCrimeArchived();
       if (archived == null) {
@@ -137,9 +141,39 @@ public class CrimeController {
       } else {
         crime.setCrimeArchived(!archived);
       }
-      crimeService.update(crime);
+      crimeService.updateCrime(crime);
     }
 
     return "redirect:/crime/" + id;
   }
+  @GetMapping("/searchPage")
+  public String searchCrimesPage(Model model){
+    List<Crime> crimes = crimeService.getAll();
+    model.addAttribute("crimes", crimes);
+    return "crimes/search-crimes-page";
+  }
+  @PostMapping("/searchByCrimeDanger")
+  public String searchCrimesByCrimeDanger(Model model) {
+    List<Crime> crimes = crimeService.getByCrimeDangerTrue();
+    model.addAttribute("crimes", crimes);
+    return "crimes/search-crimes-page";
+  }
+  @PostMapping("/searchByCrimeNotDanger")
+  public String searchCrimesByCrimeNotDanger(Model model) {
+    List<Crime> crimes = crimeService.getByCrimeDangerFalseOrCrimeDangerIsNull();
+    model.addAttribute("crimes", crimes);
+    return "crimes/search-crimes-page";
+  }
+
+
+  @PostMapping("/searchByDateOfCrime")
+  public String searchCrimesByDate(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+      @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+      Model model) {
+    List<Crime> crimes = crimeService.getByDateOfCrimeBetween(startDate, endDate);
+    model.addAttribute("crimes", crimes);
+    return "crimes/search-crimes-page";
+  }
 }
+
+

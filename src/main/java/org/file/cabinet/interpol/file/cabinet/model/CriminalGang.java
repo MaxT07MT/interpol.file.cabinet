@@ -1,17 +1,18 @@
 package org.file.cabinet.interpol.file.cabinet.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,7 @@ public class CriminalGang {
   private String name;
   @Column(name = "location")
   private String location;
+
   @Column(name = "year_of_foundation")
   @DateTimeFormat(pattern = "yyyy")
   private Date yearOfFoundation;
@@ -40,8 +42,6 @@ public class CriminalGang {
   @Column(name = "gang_archived")
   private Boolean gangArchived;
 
-  @Column(name = "gang_danger")
-  private Boolean gangDanger;
   @Column(name = "logo", columnDefinition = "LONGBLOB")
   @Lob
   private byte[] logo;
