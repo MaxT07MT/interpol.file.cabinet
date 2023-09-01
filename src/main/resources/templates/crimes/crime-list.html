@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Crime List</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    .header {
+      background-color: blue;
+      padding: 6px;
+      text-align: right;
+    }
+
+    .logo {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .content {
+      display: flex;
+    }
+
+    .left {
+      flex: 1;
+      width: 50%;
+      padding: 2px;
+      box-sizing: border-box;
+    }
+
+    .right {
+      flex: 1;
+      width: 50%;
+      padding: 2px;
+      box-sizing: border-box;
+      text-align: right;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+      margin-right: 20px;
+    }
+
+    .footer {
+      background-color: blue;
+      padding: 2px;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    .footer-buttons {
+      margin-top: 20px;
+      margin-right: 20px;
+      display: flex;
+    }
+
+    .footer-buttons a + a {
+      margin-left: 20px;
+    }
+
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2px;
+    }
+
+    th, td {
+      border: 1px solid white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: blue;
+    }
+
+    .error-message {
+      background-color: red;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">CRIME LIST</div>
+</div>
+<div class="footer">
+  <div class="footer-buttons">
+    <a th:href="@{/crime/create}"><h2>CREATE NEW CRIME</h2></a>
+    <a th:href="@{/crime/searchPage}"><h2>SEARCH PAGE</h2></a>
+    <a href="/"><h2>BACK TO MAIN</h2></a>
+  </div>
+</div>
+<div class="content">
+  <div class="left">
+    <table>
+      <tr>
+        <th><h3>NAME</h3></th>
+        <th><h3>INFO</h3></th>
+      </tr>
+      <tr th:each="crime , stat: ${crimes}" th:if="${stat.index % 2 == 0}">
+        <td th:text="${crime.name}"></td>
+        <td>
+          <a th:href="@{/crime/{id}(id=${crime.id})}">INFO</a>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="right">
+    <table>
+      <tr>
+        <th><h3>NAME</h3></th>
+        <th><h3>INFO</h3></th>
+      </tr>
+      <tr th:each="crime, stat : ${crimes}" th:if="${stat.index % 2 != 0}">
+        <td th:text="${crime.name}"></td>
+        <td>
+          <a th:href="@{/crime/{id}(id=${crime.id})}">INFO</a>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer-buttons">
+    <a th:href="@{/crime/create}"><h2>CREATE NEW CRIME</h2></a>
+    <a th:href="@{/crime/searchPage}"><h2>SEARCH PAGE</h2></a>
+    <a href="/"><h2>BACK TO MAIN</h2></a>
+  </div>
+</div>
+</body>
+</html>

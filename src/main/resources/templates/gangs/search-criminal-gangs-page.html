@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Search Page</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    .header {
+      background-color: blue;
+      padding: 6px;
+      text-align: right;
+    }
+
+    .logo {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .content {
+      display: flex;
+    }
+
+    .left {
+      flex: 1;
+      width: 50%;
+      padding: 2px;
+      box-sizing: border-box;
+    }
+
+    .right {
+      flex: 1;
+      width: 50%;
+      padding: 2px;
+      box-sizing: border-box;
+      text-align: right;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+      margin-right: 20px;
+    }
+
+    .footer {
+      background-color: blue;
+      padding: 2px;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    .footer-buttons {
+      margin-top: 20px;
+      display: flex;
+    }
+
+    .footer-buttons a + a {
+      margin-left: 20px;
+    }
+
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2px;
+      margin-right: 20px;
+    }
+
+    th, td {
+      border: 1px solid white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: blue;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">SEARCH CRIMES</div>
+</div>
+
+<div class="content">
+  <div class="right">
+    <table>
+      <tr>
+        <td>
+          <H4>NAME:</H4>
+        </td>
+        <td>
+          <form method="get" action="/criminalGang/searchByName">
+            <input type="text" name="startingLetters" id="name" placeholder="Input Starting Letters" />
+            <button type="submit">Search</button>
+          </form>
+        </td>
+
+      <tr>
+        <td>
+          <H4>ARCHIVED:</H4>
+        </td>
+        <td>
+          <form action="/criminalGang/archive" method="get">
+            <button type="submit">Search</button>
+          </form>
+        </td>
+        <td>
+          <H4>NOT_ARCHIVED:</H4>
+        </td>
+        <td>
+          <form action="/criminalGang/notArchived" method="get">
+            <button type="submit">Search</button>
+          </form>
+        </td>
+      </tr>
+
+    </table>
+  </div>
+
+  <div class="left">
+    <table>
+      <tr>
+        <th>NAME</th>
+        <th>OFFENDERS</th>
+        <th>INFO</th>
+      </tr>
+      <tr th:each="criminalGangs : ${criminalGangs}">
+        <td th:text="${criminalGangs.name}"></td>
+        <td th:text="${criminalGangs.offenders.size()}"></td>
+        <td>
+          <a th:href="@{/criminalGang/{id}(id=${criminalGangs.id})}">INFO</a>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+</div>
+<div class="footer">
+  <div class="footer-buttons">
+    <a th:href="@{/criminalGang}"><h2>BACK TO CRIMINAL GANGS LIST</h2></a>
+    <a href="/"><h2>BACK TO MAIN</h2></a>
+  </div>
+</div>
+</body>
+</html>
