@@ -10,15 +10,14 @@ public interface CrimeService {
   List<Crime> getAll();
   List<Crime> getByCrimeArchivedFalseOrCrimeArchivedIsNull();
   List<Crime> getByCrimeArchivedTrue();
-  List<Crime> getByCrimeSolvedFalseOrCrimeSolvedIsNull();
-  List<Crime> getByCrimeSolvedTrue();
+ // List<Crime> getByCrimeSolvedFalseOrCrimeSolvedIsNull();
+ // List<Crime> getByCrimeSolvedTrue();
   List<Crime> getByCrimeDangerFalseOrCrimeDangerIsNull();
   List<Crime> getByCrimeDangerTrue();
-  List<Crime> getByCrimeDanger(Boolean crimeDanger);
+ // List<Crime> getByCrimeDanger(Boolean crimeDanger);
   List<Crime> getByDateOfCrimeBetween(Date startDate, Date endDate);
-
+  List<Crime> getByNameStartsWithIgnoreCase(String name);
   Crime getById(long id);
-
   Crime createCrime(Crime crime);
   Crime updateCrime(Crime crime);
   void deleteCrime(long id);

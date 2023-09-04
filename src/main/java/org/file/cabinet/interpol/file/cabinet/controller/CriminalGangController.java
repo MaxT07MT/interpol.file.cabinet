@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import javax.validation.Valid;
 import org.file.cabinet.interpol.file.cabinet.model.Crime;
 import org.file.cabinet.interpol.file.cabinet.model.CriminalGang;
 import org.file.cabinet.interpol.file.cabinet.model.Offender;
@@ -17,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
@@ -28,6 +30,7 @@ public class CriminalGangController {
   private final CriminalGangService criminalGangService;
   private final OffenderService offenderService;
   private final CrimeService crimeService;
+
   @Autowired
   public CriminalGangController(CriminalGangService criminalGangService,
       OffenderService offenderService, CrimeService crimeService) {
@@ -44,34 +47,25 @@ public class CriminalGangController {
     return "gangs/criminal-gang-list";
   }
 
-  //Поиск действующих преступных группировок
   @GetMapping("/notArchived")
   public String getAllGangs(Model model, @RequestParam(required = false) String error) {
     List<CriminalGang> criminalGangs = criminalGangService.getByGangArchivedFalseOrGangArchivedIsNull();
     model.addAttribute("criminalGangs", criminalGangs);
-    if ("deleteNotAllowed".equals(error)) {
-      model.addAttribute("deleteErrorMessage", "Из базы невозможно удалить преступника до его смерти. Его нужно держать в поле зрения пожизнено");
-    }
-    if ("deleteNotArchived".equals(error)) {
-      model.addAttribute("deleteErrorMessage", "Нельзя удалять действующую преступную группировку");
-    }
-    return "gangs/search-criminal-gangs-page";
+    return "gangs/criminal-gangs-search-page";
 
   }
-  //Поиск преступных группировок помещенных в архив
+
+
   @GetMapping("/archive")
-  public String getArchivedGangs(Model model, @RequestParam(required = false) String error){
+  public String getArchivedGangs(Model model, @RequestParam(required = false) String error) {
     List<CriminalGang> criminalGangs = criminalGangService.getByGangArchivedTrue();
     model.addAttribute("criminalGangs", criminalGangs);
-    if ("deleteNotAllowed".equals(error)) {
-      model.addAttribute("deleteErrorMessage", "Из базы невозможно удалить преступника до его смерти. Его нужно держать в поле зрения пожизнено");
-    }
-    return "gangs/search-criminal-gangs-page";
+    return "gangs/criminal-gangs-search-page";
   }
 
 
   @GetMapping("/{id}")
-  public String getCriminalGangById(@PathVariable long id, Model model) {
+  public String getCriminalGangById(@PathVariable long id, Model model, String error) {
     CriminalGang criminalGang = criminalGangService.getById(id);
     Set<Offender> offenders = criminalGang.getOffenders();
     Set<Crime> crimes = new HashSet<>();
@@ -80,10 +74,12 @@ public class CriminalGangController {
     }
     model.addAttribute("criminalGang", criminalGang);
     model.addAttribute("crimes", crimes);
+    if ("deleteGangNotArchived".equals(error)) {
+      model.addAttribute("delErrorMessage", "Нельзя удалять gang, который не перемещен в архив");
+    }
 
     return "gangs/criminal-gang-details";
   }
-
 
 
   @GetMapping("/create")
@@ -94,13 +90,20 @@ public class CriminalGangController {
   }
 
   @PostMapping("/create")
-  public String createCriminalGang(@ModelAttribute CriminalGang criminalGang) {
+  public String createCriminalGang(@Valid @ModelAttribute("criminalGang") CriminalGang criminalGang,
+      BindingResult bindingResult,
+      Model model) {
+    if (bindingResult.hasErrors()) {
+      model.addAttribute("validationErrors", bindingResult.getAllErrors());
+      return "gangs/criminal-gang-create";
+    }
     criminalGangService.createCriminalGang(criminalGang);
     return "redirect:/criminalGang";
   }
 
   @PostMapping("/{id}/uploadLogo")
-  public String uploadCriminalGangLogo(@PathVariable long id, @RequestParam("logo") MultipartFile logoFile) throws IOException {
+  public String uploadCriminalGangLogo(@PathVariable long id,
+      @RequestParam("logo") MultipartFile logoFile) throws IOException {
     CriminalGang criminalGang = criminalGangService.getById(id);
 
     if (!logoFile.isEmpty()) {
@@ -110,6 +113,7 @@ public class CriminalGangController {
 
     return "redirect:/criminalGang/edit/{id}";
   }
+
   @GetMapping("/{id}/logo")
   public ResponseEntity<byte[]> getCriminalGangLogo(@PathVariable long id) {
     CriminalGang criminalGang = criminalGangService.getById(id);
@@ -134,28 +138,41 @@ public class CriminalGangController {
   }
 
   @PostMapping("/edit/{id}")
-  public String editCriminalGang(@PathVariable long id, @ModelAttribute CriminalGang criminalGang) {
+  public String editCriminalGang(@Valid
+  @ModelAttribute CriminalGang criminalGang, BindingResult bindingResult,
+      Model model) {
+    if (bindingResult.hasErrors()) {
+      model.addAttribute("validationErrors", bindingResult.getAllErrors());
+      return "gangs/criminal-gang-edit";
+    }
     criminalGangService.updateCriminalGang(criminalGang);
     return "redirect:/criminalGang/{id}";
   }
 
+
   @GetMapping("/delete/{id}")
   public String deleteCriminalGang(@PathVariable long id) {
     CriminalGang gang = criminalGangService.getById(id);
-
-    if (gang != null) {
+    if (gang == null) {
+      return "redirect:/criminalGang";
+    }
+    Boolean gangArchived = gang.getGangArchived();
+    if (Boolean.TRUE.equals(gangArchived)) {
       Set<Offender> offenders = gang.getOffenders();
+
       if (!offenders.isEmpty()) {
-        for (Offender offender : offenders ) {
+        for (Offender offender : offenders) {
           offender.setGang(null);
           offenderService.updateOffender(offender);
         }
       }
       criminalGangService.deleteCriminalGang(id);
+      return "redirect:/criminalGang";
+    } else {
+      return "redirect:/criminalGang/{id}?error=deleteGangNotArchived";
     }
-
-    return "redirect:/criminalGang";
   }
+
 
   @GetMapping("/{id}/offender")
   public String showOffenders(@PathVariable long id, Model model) {
@@ -165,20 +182,23 @@ public class CriminalGangController {
     model.addAttribute("offender", offenders);
     return "gangs/criminal-gang-details";
   }
+
   @GetMapping("/searchPage")
-  public String searchCriminalGangsPage(Model model){
+  public String searchCriminalGangsPage(Model model) {
     List<CriminalGang> criminalGangs = criminalGangService.getAll();
     model.addAttribute("criminalGangs", criminalGangs);
-    return "gangs/search-criminal-gangs-page";
+    return "gangs/criminal-gangs-search-page";
   }
+
   @GetMapping("/searchByName")
   public String searchGangsByStartingLetters(
       @RequestParam("startingLetters") String name,
       Model model) {
     List<CriminalGang> criminalGangs = criminalGangService.getByNameStartsWithIgnoreCase(name);
     model.addAttribute("criminalGangs", criminalGangs);
-    return "gangs/search-criminal-gangs-page";
+    return "gangs/criminal-gangs-search-page";
   }
+
   @PostMapping("/{id}/toggleArchive")
   public String toggleArchive(@PathVariable long id) {
     CriminalGang criminalGang = criminalGangService.getById(id);
@@ -192,7 +212,7 @@ public class CriminalGangController {
       criminalGangService.updateCriminalGang(criminalGang);
     }
 
-    return "redirect:/criminalGang/{id}" ;
+    return "redirect:/criminalGang/{id}";
   }
 
 }

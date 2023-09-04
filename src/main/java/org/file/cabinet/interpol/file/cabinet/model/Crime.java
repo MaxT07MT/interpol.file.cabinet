@@ -16,6 +16,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,19 +35,25 @@ public class Crime {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private long id;
+  @NotBlank(message = "Name of crime cannot be empty")
   @Column(name = "name")
   private String name;
+  @NotBlank(message = "Place of crime cannot be empty")
   @Column(name = "place")
   private String place;
   @Column(name = "date_of_crime")
   @DateTimeFormat(pattern = "yyyy-MM-dd")
+  @NotNull(message = "Date of crime is required")
   private Date dateOfCrime;
+  @NotBlank(message = "Description of crime cannot be empty")
   @Column(name = "description")
   private String description;
   @Column(name = "crime_archived")
   private Boolean crimeArchived;
+  @NotNull(message = "Solved status cannot be empty")
   @Column(name = "crime_solved")
   private Boolean crimeSolved;
+  @NotNull(message = "Danger status cannot be empty")
   @Column(name = "crime_danger")
   private Boolean crimeDanger;
   @Column(name = "photo_crime", columnDefinition = "LONGBLOB")

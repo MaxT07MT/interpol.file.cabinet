@@ -1,10 +1,197 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+  <title>Create Criminal Gang</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    .header {
+      background-color: blue;
+      padding: 6px;
+      text-align: right;
+    }
+
+    .logo {
+      font-size: 16px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .content {
+      display: flex;
+    }
+
+    .left {
+      flex: 1;
+      width: 50%;
+      padding: 2px;
+      box-sizing: border-box;
+    }
+
+    .right {
+      flex: 1;
+      width: 50%;
+      padding: 2px;
+      box-sizing: border-box;
+      text-align: right;
+    }
+
+
+    a {
+      color: white;
+      text-decoration: none;
+      margin-right: 20px;
+    }
+
+    .footer {
+      background-color: blue;
+      padding: 2px;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    .footer-buttons {
+      margin-top: 20px;
+      display: flex;
+    }
+
+    .footer-buttons a + a {
+      margin-left: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2px;
+    }
+
+    th, td {
+      border: 1px solid white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: blue;
+    }
+
+    .error-message {
+      background-color: red;
+      color: white;
+    }
+
+
+    .action-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: blue;
+      color: white;
+      border: 2px solid white;
+      border-radius: 50px;
+      text-align: center;
+      font-weight: bold;
+      text-transform: uppercase;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .action-button:hover {
+      background-color: white;
+      color: blue;
+    }
+
+    .file-input-label {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: blue;
+      color: white;
+      border: 2px solid white;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .file-input-label:hover {
+      background-color: white;
+      color: blue;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .photo-container {
+      text-align: right;
+      margin-left: 30px;
+      margin-bottom: 30px;
+      padding-bottom: 30px;
+      position: relative;
+    }
+    .offender-photo {
+      width: 300px;
+      height: auto;
+      max-height: 900px;
+      position: absolute;
+      border: 15px solid blue;
+      top: 0cm;
+      right: 1cm;
+    }
+  </style>
 </head>
 <body>
+<div class="header">
+  <div class="logo"><h1>CREATE GANG FORM</h1></div>
+</div>
+<div class="content">
+  <div class="left">
+    <table class="table" style="border: none;">
+      <form th:object="${criminalGang}" th:action="${actionUrl}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}" />
+        <tr>
+          <td>NAME:</td><td><input type="text" th:field="*{name}" /></td>
+        </tr>
+        <tr>
+          <td>LOCATION:</td><td><input type="text" th:field="*{location}" /></h2><br /></td>
+        </tr>
+        <tr>
+          <td>YEAR OF FOUNDATION:</td><td><input type="date" th:field="*{yearOfFoundation}" th:value="${#dates.format(criminalGang.yearOfFoundation, 'yyyy-MM-dd')}" /></td></td></tr>
+        <tr>
+          <td>DESCRIPTION:</td>
+          <td><input type="text" th:field="*{description}" /></td></tr>
+        <input type="hidden" th:field="*{logo}" /><br />
+        <input type="hidden" th:field="*{gangArchived}" /></label><br />
+        <input th:each="offender : ${criminalGang.offenders}" type="hidden" th:value="${offender.offId}" name="offenders" />
+        <tr>
+          <td><input type="submit" value="Submit" class="action-button" /></td></tr>
+      </form>
 
+
+    </table>
+  </div>
+  <div class="right">
+    <div class="error-message">
+      <div th:if="${validationErrors}" class="error-message">
+        <p>Error(s) found:</p>
+        <ul>
+          <li th:each="error : ${validationErrors}">
+            <span th:text="${error.defaultMessage}"></span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer-buttons">
+    <a href="/criminalGang"><h2>BACK TO CRIMINAL GANGS LIST</h2></a>
+    <a href="/"><h2>BACK TO MAIN</h2></a>
+  </div>
+</div>
 </body>
 </html>

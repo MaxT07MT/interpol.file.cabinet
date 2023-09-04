@@ -83,10 +83,6 @@
       background-color: blue;
     }
 
-    .error-message {
-      background-color: red;
-      color: white;
-    }
   </style>
 </head>
 <body>
@@ -111,8 +107,8 @@
   <div class="right">
     <table>
       <tr>
-      <th>NAME</th>
-      <th>INFO</th>
+        <th>NAME</th>
+        <th>INFO</th>
       </tr>
       <tr th:each="gang, stat : ${criminalGangs}" th:if="${__${stat.index}__ % 2 != 0}">
         <td th:text="${gang.name}"></td>

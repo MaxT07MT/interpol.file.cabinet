@@ -12,7 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,13 +30,17 @@ public class CriminalGang {
   @Column(name = "id")
   private long id;
   @Column(name = "name")
+  @NotBlank(message = "Name of gang cannot be empty")
   private String name;
+  @NotBlank(message = "Location of gang cannot be empty")
   @Column(name = "location")
   private String location;
 
   @Column(name = "year_of_foundation")
-  @DateTimeFormat(pattern = "yyyy")
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  @NotNull(message = "Date of foundation is required")
   private Date yearOfFoundation;
+  @NotBlank(message = "Description of gang cannot be empty")
   @Column(name = "description")
   private String description;
 

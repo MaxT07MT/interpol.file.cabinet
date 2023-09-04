@@ -9,19 +9,24 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface CrimeRepository extends JpaRepository<Crime, Long> {
+  List<Crime> findByNameStartsWithIgnoreCase(String name);
   List<Crime> findByCrimeArchivedFalseOrCrimeArchivedIsNull();
+
   List<Crime> findByCrimeArchivedTrue();
+
   List<Crime> findByCrimeSolvedFalseOrCrimeSolvedIsNull();
+
   List<Crime> findByCrimeSolvedTrue();
+
   List<Crime> findByCrimeDangerFalseOrCrimeDangerIsNull();
+
   List<Crime> findByCrimeDangerTrue();
 
   List<Crime> findByCrimeDanger(Boolean crimeDanger);
-  List<Crime> findByDateOfCrimeBetween(Date startDate, Date endDate);
-  @Query("SELECT DISTINCT c FROM Crime c JOIN c.offenders o WHERE o.gang.id = :gangId")
-  List<Crime> findAllCrimesByGangId(long gangId);
-}
 
+  List<Crime> findByDateOfCrimeBetween(Date startDate, Date endDate);
+
+}
 
 
 

@@ -12,17 +12,7 @@
       margin: 0;
       padding: 0;
     }
-    .page {
-      width: 100vw;
-      height: auto;
-      display: flex;
-      justify-content: flex-end;
-      align-items: flex-start;
-      padding: 20px;
-      box-sizing: border-box;
-      border-radius: 25px;
-      margin-bottom: 15px;
-    }
+
     .table-container {
       display: flex;
       width: 100%;
@@ -30,31 +20,37 @@
       margin: 0 auto;
       background-color: black;
     }
+
     .table-column {
       flex: 1;
       padding: 10px;
       border-right: 1px solid white;
       border-bottom: 1px solid white;
     }
+
     .table-column:last-child {
       border-right: none;
     }
+
     .table {
       width: 100%;
       border-collapse: collapse;
     }
+
     .table th,
     .table td {
       border: 1px solid white;
       padding: 8px;
       text-align: left;
     }
+
     .photo-container {
       text-align: right;
       margin-left: 30px;
       margin-bottom: 30px;
       position: relative;
     }
+
     .offender-photo {
       width: 300px;
       height: auto;
@@ -64,6 +60,7 @@
       top: 0cm;
       right: 1cm;
     }
+
     .action-button {
       background-color: #333;
       color: white;
@@ -72,6 +69,7 @@
       cursor: pointer;
       margin-right: 5px;
     }
+
     .header {
       background-color: blue;
       padding: 6px;
@@ -86,6 +84,7 @@
       padding: 10px;
       z-index: 1;
     }
+
     .popup-button {
       background-color: #333;
       color: white;
@@ -93,18 +92,21 @@
       padding: 5px 10px;
       cursor: pointer;
     }
+
     .dangerous-banner {
-      background-color: blue;
+      background-color: red;
       color: white;
       text-align: center;
       padding: 10px;
       font-size: 36px;
       margin-bottom: 15px;
     }
+
     .error-message {
       background-color: red;
       color: white;
     }
+
     .footer {
       background-color: blue;
       padding: 2px;
@@ -142,30 +144,57 @@
 <div class="table-container">
   <div class="table-column">
     <table class="table">
-      <tr><th>Name:</th> <td><span th:text="${crime.name}"></span></td></tr>
-      <tr><th>Solved:</th> <td><span th:if="${crime.crimeSolved}">Дело раскрыто</span>
-        <span th:unless="${crime.crimeSolved}">Следствие продолжается</span></td></tr>
-      <tr><th>Place:</th><td><span th:text="${crime.place}"></span></td></tr>
-      <tr><th>Date of Crime:</th><td><span th:text="${crime.dateOfCrime != null ? #dates.format(crime.dateOfCrime, 'yyyy-MM-dd') : ''}"></span></td></tr>
-      <tr><th>Description:</th> <td> <button class="popup-button" onclick="togglePopup('description-popup')">Description</button>
-        <div id="description-popup" class="popup">
-          <span th:text="${crime.description}" class="popup-content"></span>
-        </div></td></tr>
-      <tr><th>Offenders:</th> <td>           <button class="popup-button" onclick="togglePopup('offender-list-popup')">Offender List</button>
-        <div id="offender-list-popup" class="popup">
-          <ul class="popup-content">
-            <li th:each="offender : ${crime.offenders}">
-              <a th:href="@{/offender/{offId}(offId=${offender.offId})}" class="offender-link">
-                <span th:text="${offender.firstname + ' ' + offender.lastname}"></span>
-              </a>
-            </li>
-          </ul>
-        </div></td></tr>
+      <tr>
+        <th>NAME:</th>
+        <td><span th:text="${crime.name}"></span></td>
+      </tr>
+      <tr>
+        <th>SOLVED:</th>
+        <td><span th:if="${crime.crimeSolved}">CRIME SOLVED</span>
+          <span th:unless="${crime.crimeSolved}">CRIME NOT SOLVED</span></td>
+      </tr>
+      <tr>
+        <th>PLACE:</th>
+        <td><span th:text="${crime.place}"></span></td>
+      </tr>
+      <tr>
+        <th>DATE_OF_CRIME:</th>
+        <td><span
+            th:text="${crime.dateOfCrime != null ? #dates.format(crime.dateOfCrime, 'yyyy-MM-dd') : ''}"></span>
+        </td>
+      </tr>
+      <tr>
+        <th>DESCRIPTION:</th>
+        <td>
+          <button class="popup-button" onclick="togglePopup('description-popup')">DESCRIPTION
+          </button>
+          <div id="description-popup" class="popup">
+            <span th:text="${crime.description}" class="popup-content"></span>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <th>OFFENDERS:</th>
+        <td>
+          <button class="popup-button" onclick="togglePopup('offender-list-popup')">OFFENDER LIST
+          </button>
+          <div id="offender-list-popup" class="popup">
+            <ul class="popup-content">
+              <li th:each="offender : ${crime.offenders}">
+                <a th:href="@{/offender/{offId}(offId=${offender.offId})}" class="offender-link">
+                  <span th:text="${offender.firstname + ' ' + offender.lastname}"></span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </td>
+      </tr>
     </table>
   </div>
   <div class="table-column">
     <div class="photo-container">
-      <img th:if="${crime.photoCrime != null}" th:src="@{/crime/{id}/photoCrime(id=${crime.id})}" alt="Crime Photo" class="offender-photo">
+      <img th:if="${crime.photoCrime != null}" th:src="@{/crime/{id}/photoCrime(id=${crime.id})}"
+           alt="Crime Photo" class="offender-photo1">
     </div>
   </div>
 </div>
@@ -179,7 +208,7 @@
   <div class="table-column">
     <table class="table" style="border: none;">
       <tr>
-        <th colspan="2">Actions:</th>
+        <th colspan="2">ACTIONS:</th>
       </tr>
       <tr>
         <td>
@@ -190,18 +219,19 @@
         <td>
           <form th:action="@{/crime/{id}/toggleArchive(id=${crime.id})}" method="post">
             <button type="submit" class="action-button">
-              <span th:text="${crime.crimeArchived} ? 'Replace from Archive' : 'Add to Archive'"></span>
+              <span
+                  th:text="${crime.crimeArchived} ? 'Replace from Archive' : 'Add to Archive'"></span>
             </button>
           </form>
         </td>
       </tr>
-
+      <tr th:if="${crime.crimeArchived}">
         <td colspan="2">
           <form th:action="@{/crime/delete/{id}(id=${crime.id})}" method="get">
             <button type="submit" class="action-button">DELETE</button>
           </form>
         </td>
-
+      </tr>
       <div class="error-message">
         <tr th:if="${deleteErrorMessage}" class="error-message">
           <td colspan="3">
@@ -218,12 +248,13 @@
 <script>
   function togglePopup(popupId) {
     const popup = document.getElementById(popupId);
-    popup.style.display = popup.style.display === 'block' ? 'none' : 'block';}
+    popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+  }
 </script>
 <div class="footer">
   <div class="footer-buttons">
-<a href="/crime"><h2>BACK TO CRIMES LIST</h2></a>
-<a href="/"><h2>BACK TO MAIN</h2></a>
+    <a href="/crime"><h2>BACK TO CRIMES LIST</h2></a>
+    <a href="/"><h2>BACK TO MAIN</h2></a>
   </div>
 </div>
 </body>

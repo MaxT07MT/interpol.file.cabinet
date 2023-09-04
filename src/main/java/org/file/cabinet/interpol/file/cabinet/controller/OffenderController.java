@@ -41,7 +41,6 @@ public class OffenderController {
     this.criminalGangService = criminalGangService;
   }
 
-  //Поиск всех нарушителей из базы данных
   @GetMapping
   public String getOffenders(Model model, @RequestParam(required = false) String error) {
     List<Offender> offenders = offenderService.getAll();
@@ -57,37 +56,23 @@ public class OffenderController {
 
   }
 
-  //Поиск всех не отошедших от дел преступников
   @GetMapping("/notArchived")
   public String getAllOffenders(Model model, @RequestParam(required = false) String error) {
     List<Offender> offenders = offenderService.getByArchivedFalseOrArchivedIsNull();
     model.addAttribute("offenders", offenders);
-    if ("deleteNotAllowed".equals(error)) {
-      model.addAttribute("deleteErrorMessage",
-          "Из базы невозможно удалить преступника до его смерти. Его нужно держать в поле зрения пожизнено");
-    }
-    if ("deleteNotArchived".equals(error)) {
-      model.addAttribute("deleteErrorMessage", "Нельзя удалять действующего преступника");
-    }
-    return "offenders/search-offenders-page";
+    return "offenders/offender-search-page";
 
   }
 
-  //Поиск преступников помещенных в архив
   @GetMapping("/archive")
   public String getArchiveOffenders(Model model, @RequestParam(required = false) String error) {
     List<Offender> offenders = offenderService.getByArchivedTrue();
     model.addAttribute("offenders", offenders);
-    if ("deleteNotAllowed".equals(error)) {
-      model.addAttribute("deleteErrorMessage",
-          "Из базы невозможно удалить преступника до его смерти. Его нужно держать в поле зрения пожизнено");
-    }
-    return "offenders/search-offenders-page";
+    return "offenders/offender-search-page";
   }
 
-  //Поиск конкретного преступника по его id, перенаправление на личную страницу
   @GetMapping("/{offId}")
-  public String getOffenderById(@PathVariable long offId, Model model , String error) {
+  public String getOffenderById(@PathVariable long offId, Model model, String error) {
     Offender offender = offenderService.getOffenderById(offId);
     Crime latestCrime = offenderService.getLatestCrimeByOffender(offender);
     boolean isDanger = offenderService.getIsDangerByOffender(offender);
@@ -100,17 +85,17 @@ public class OffenderController {
           "Из базы невозможно удалить преступника до его смерти. Его нужно держать в поле зрения пожизнено");
     }
     if ("deleteNotArchived".equals(error)) {
-      model.addAttribute("deleteErrorMessage", "Нельзя удалять преступника, который не перемещен в архив");
+      model.addAttribute("deleteErrorMessage",
+          "Нельзя удалять преступника, который не перемещен в архив");
     }
     return "offenders/offender-details";
   }
 
-  //Переход на страницу поисков
   @GetMapping("/searchPage")
   public String searchOffenderPage(Model model) {
     List<Offender> offenders = offenderService.getAll();
     model.addAttribute("offenders", offenders);
-    return "offenders/search-offenders-page";
+    return "offenders/offender-search-page";
   }
 
   @PostMapping("/searchByFirstName")
@@ -118,7 +103,7 @@ public class OffenderController {
       Model model) {
     List<Offender> offenders = offenderService.getByFirstnameStartsWithIgnoreCase(firstname);
     model.addAttribute("offenders", offenders);
-    return "offenders/search-offenders-page";
+    return "offenders/offender-search-page";
   }
 
   @PostMapping("/searchByLastName")
@@ -126,7 +111,7 @@ public class OffenderController {
       Model model) {
     List<Offender> offenders = offenderService.getByLastnameStartsWithIgnoreCase(lastname);
     model.addAttribute("offenders", offenders);
-    return "offenders/search-offenders-page";
+    return "offenders/offender-search-page";
   }
 
   @PostMapping("/searchByNickname")
@@ -134,7 +119,7 @@ public class OffenderController {
       Model model) {
     List<Offender> offenders = offenderService.getByNicknameStartsWithIgnoreCase(nickname);
     model.addAttribute("offenders", offenders);
-    return "offenders/search-offenders-page";
+    return "offenders/offender-search-page";
   }
 
   @PostMapping("/searchByHeight")
@@ -156,7 +141,7 @@ public class OffenderController {
     }
 
     model.addAttribute("offenders", offenders);
-    return "offenders/search-offenders-page";
+    return "offenders/offender-search-page";
   }
 
 
@@ -179,7 +164,7 @@ public class OffenderController {
     }
 
     model.addAttribute("offenders", offenders);
-    return "offenders/search-offenders-page";
+    return "offenders/offender-search-page";
   }
 
 
@@ -188,7 +173,7 @@ public class OffenderController {
     List<Offender> offenders = offenderService.getByCrimesCrimeDangerTrue();
     model.addAttribute("offenders", offenders);
     model.addAttribute("isDanger", true);
-    return "offenders/search-offenders-page";
+    return "offenders/offender-search-page";
   }
 
   @GetMapping("/notDangerous")
@@ -196,18 +181,18 @@ public class OffenderController {
     List<Offender> offenders = offenderService.getAllByCrimesCrimeDangerFalseOrCrimesCrimeDangerIsNull();
     model.addAttribute("offenders", offenders);
     model.addAttribute("isDanger", false);
-    return "offenders/search-offenders-page";
+    return "offenders/offender-search-page";
   }
 
   @PostMapping("/searchByStatus")
   public String searchOffendersByStatus(@RequestParam String status, Model model) {
     List<Offender> offenders = offenderService.getByStatus(OffenderStatus.valueOf(status));
     model.addAttribute("offenders", offenders);
-    return "offenders/search-offenders-page";
+    return "offenders/offender-search-page";
   }
 
 
-  //Переход на страницу добавления/редактирования преступника
+
   @GetMapping("/create")
   public String createOffenderForm(Model model) {
     model.addAttribute("offender", new Offender());
@@ -216,11 +201,9 @@ public class OffenderController {
   }
 
 
-
-
-  //Создание нового преступника
   @PostMapping("/create")
-  public String createOffender(@Valid @ModelAttribute("offender") Offender offender, BindingResult bindingResult, Model model) {
+  public String createOffender(@Valid @ModelAttribute("offender") Offender offender,
+      BindingResult bindingResult, Model model) {
     if (bindingResult.hasErrors()) {
       model.addAttribute("validationErrors", bindingResult.getAllErrors());
       return "offenders/offender-create";
@@ -231,7 +214,6 @@ public class OffenderController {
   }
 
 
-  //Добавление фотографии преступника в его личный профиль
   @PostMapping("/{offId}/uploadPhoto")
   public String uploadOffenderPhoto(@PathVariable long offId,
       @RequestParam("photo") MultipartFile photoFile) throws IOException {
@@ -244,7 +226,6 @@ public class OffenderController {
     return "redirect:/offender/edit/{offId}";
   }
 
-  //Отображение фотографии преступника в его личном профиле
   @GetMapping("/{offId}/photo")
   public ResponseEntity<byte[]> getOffenderPhotoById(@PathVariable long offId) {
     Offender offender = offenderService.getOffenderById(offId);
@@ -259,7 +240,6 @@ public class OffenderController {
     }
   }
 
-  //Переход на страницу добавления/редактирования преступника
   @GetMapping("/edit/{offId}")
   public String editOffenderForm(@PathVariable long offId, Model model) {
     Offender offender = offenderService.getOffenderById(offId);
@@ -268,21 +248,18 @@ public class OffenderController {
     return "offenders/offender-edit";
   }
 
-  // Редактирование информации о преступнике
   @PostMapping("/edit/{offId}")
   public String editOffender(@Valid
-      @ModelAttribute Offender offender,BindingResult bindingResult,
+  @ModelAttribute Offender offender, BindingResult bindingResult,
       Model model) {
     if (bindingResult.hasErrors()) {
       model.addAttribute("validationErrors", bindingResult.getAllErrors());
       return "offenders/offender-edit";
- }
+    }
     offenderService.updateOffender(offender);
     return "redirect:/offender/{offId}";
   }
 
-  //Удаление преступника . Метод накладывает ограничения по удалению живых , опасных и не находящихся
-  //в архиве преступников
   @GetMapping("/delete/{offId}")
   public String deleteOffender(@PathVariable long offId) {
     Offender offender = offenderService.getOffenderById(offId);
@@ -292,7 +269,7 @@ public class OffenderController {
     }
 
     if (offender.getArchived() != null && offender.getArchived()) {
-      Set<Crime> crimes =  offender.getCrimes();
+      Set<Crime> crimes = offender.getCrimes();
       if (!crimes.isEmpty()) {
         for (Crime crime : crimes) {
           crime.getOffenders().remove(offender);
@@ -314,8 +291,6 @@ public class OffenderController {
     return "offenders/offender-details";
   }
 
-
-  //Показ списка преступных группировок для выбора
   @GetMapping("/{offId}/gangs")
   public String showGangsForOffender(@PathVariable long offId, Model model) {
     Offender offender = offenderService.getOffenderById(offId);
@@ -324,9 +299,10 @@ public class OffenderController {
     model.addAttribute("offender", offender);
     model.addAttribute("criminalGangs", criminalGangs);
 
-    return "offenders/add-offender-to-gang";
+    return "offenders/offender-add-to-gang";
   }
-  //Выбор преступной группировки для преступника
+
+
   @PostMapping("/{offId}/join-gang")
   public String joinGang(
       @PathVariable long offId,
@@ -345,7 +321,7 @@ public class OffenderController {
     offenderService.updateOffender(offender);
     return "redirect:/offender/edit/{offId}";
   }
-  //Добавление в архив/извлечение из архива преступника
+
   @PostMapping("/{offId}/toggleArchive")
   public String toggleArchive(@PathVariable long offId) {
     Offender offender = offenderService.getOffenderById(offId);

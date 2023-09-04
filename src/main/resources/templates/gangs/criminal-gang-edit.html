@@ -133,6 +133,7 @@
       padding-bottom: 30px;
       position: relative;
     }
+
     .offender-photo {
       width: 300px;
       height: auto;
@@ -150,49 +151,77 @@
 </div>
 <div class="content">
   <div class="left">
-        <table class="table" style="border: none;">
-          <form th:object="${criminalGang}" th:action="${actionUrl}" method="post" enctype="multipart/form-data">
-            <input type="hidden" th:field="*{id}" />
-            <tr>
-              <td>NAME:</td><td><input type="text" th:field="*{name}" /></td>
-            </tr>
-            <tr>
-              <td>LOCATION:</td><td><input type="text" th:field="*{location}" /></h2><br /></td>
-            </tr>
-            <tr>
-              <td>YEAR OF FOUNDATION:</td><td><input type="date"  th:field="*{yearOfFoundation}" /></td></tr>
-            <tr>
-              <td>DESCRIPTION:</td>
-              <td><input type="text" th:field="*{description}" /></td></tr>
-                  <input type="hidden" th:field="*{logo}" /><br />
-            <input th:each="offender : ${criminalGang.offenders}" type="hidden" th:value="${offender.offId}" name="offenders" />
-            <tr>
-              <td><input type="submit" value="Submit" class="action-button" /></td></tr>
-          </form>
-          <tr>
-            <td colspan="2">
-              <form class="upload-form" th:action="@{/criminalGang/{id}/uploadLogo(id=${criminalGang.id})}" method="post" enctype="multipart/form-data">
-                <label class="file-input-label">
-                  <input type="file" name="logo" accept="image/*" class="file-input">
-                  <span class="file-input-text">SELECT LOGO</span>
-                </label>
-                <button type="submit" class="action-button">UPLOAD LOGO</button>
-              </form>
-            </td>
-          </tr>
+    <table class="table" style="border: none;">
+      <form th:object="${criminalGang}" th:action="${actionUrl}" method="post"
+            enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}"/>
+        <tr>
+          <td>NAME:</td>
+          <td><input type="text" th:field="*{name}"/></td>
+        </tr>
+        <tr>
+          <td>LOCATION:</td>
+          <td><input type="text" th:field="*{location}"/></h2><br/></td>
+        </tr>
+        <tr>
+        <tr>
+          <td>YEAR OF FOUNDATION:</td>
+          <td><input type="date" th:field="*{yearOfFoundation}"
+                     th:value="${#dates.format(criminalGang.yearOfFoundation, 'yyyy-MM-dd')}"/></td>
+        </tr>
 
-        </table>
+        <tr>
+          <td>DESCRIPTION:</td>
+          <td><input type="text" th:field="*{description}"/></td>
+        </tr>
+        <input type="hidden" th:field="*{logo}"/><br/>
+        <input type="hidden" th:field="*{gangArchived}"/></label><br/>
+        <input th:each="offender : ${criminalGang.offenders}" type="hidden"
+               th:value="${offender.offId}" name="offenders"/>
+        <tr>
+          <td><input type="submit" value="Submit" class="action-button"/></td>
+        </tr>
+      </form>
+      <tr>
+        <td colspan="2">
+          <form class="upload-form"
+                th:action="@{/criminalGang/{id}/uploadLogo(id=${criminalGang.id})}" method="post"
+                enctype="multipart/form-data">
+            <label class="file-input-label">
+              <input type="file" name="logo" accept="image/*" class="file-input">
+              <span class="file-input-text">SELECT LOGO</span>
+            </label>
+            <button type="submit" class="action-button">UPLOAD LOGO</button>
+          </form>
+        </td>
+      </tr>
+
+    </table>
+    <table class="table" style="border: none;">
+      <div class="error-message">
+        <div th:if="${validationErrors}" class="error-message">
+          <p>Error(s) found:</p>
+          <ul>
+            <li th:each="error : ${validationErrors}">
+              <span th:text="${error.defaultMessage}"></span>
+            </li>
+          </ul>
+        </div>
       </div>
+    </table>
+  </div>
   <div class="right">
     <div class="photo-container">
-      <img th:if="${criminalGang.logo != null}" th:src="@{/criminalGang/{id}/logo(id=${criminalGang.id})}" alt="Criminal Gang Logo" class="criminalGang-logo">
+      <img th:if="${criminalGang.logo != null}"
+           th:src="@{/criminalGang/{id}/logo(id=${criminalGang.id})}" alt="Criminal Gang Logo"
+           class="criminalGang-logo">
     </div>
   </div>
 </div>
 <div class="footer">
   <div class="footer-buttons">
-<a href="/criminalGang"><h2>BACK TO CRIMINAL GANGS LIST</h2></a>
-<a href="/"><h2>BACK TO MAIN</h2></a>
+    <a href="/criminalGang"><h2>BACK TO CRIMINAL GANGS LIST</h2></a>
+    <a href="/"><h2>BACK TO MAIN</h2></a>
   </div>
 </div>
 </body>

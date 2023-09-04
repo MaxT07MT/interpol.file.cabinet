@@ -132,6 +132,7 @@
       padding-bottom: 30px;
       position: relative;
     }
+
     .offender-photo {
       width: 300px;
       height: auto;
@@ -147,77 +148,103 @@
 </head>
 <body>
 <div class="header">
-  <div class="logo"><h1>EDIT CRIME FORM</h1></div>
+  <div class="logo"><h1>EDIT CRIME</h1></div>
 </div>
 <div class="content">
   <div class="left">
     <table class="table" style="border: none;">
-      <form th:object="${crime}" th:action="${actionUrl}" method="post" enctype="multipart/form-data">
-        <input type="hidden" th:field="*{id}" />
+      <form th:object="${crime}" th:action="${actionUrl}" method="post"
+            enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}"/>
         <tr>
-          <td>NAME:</td><td><input type="text" th:field="*{name}" /></td>
+          <td>NAME:</td>
+          <td><input type="text" th:field="*{name}"/></td>
         </tr>
         <tr>
-          <td>PLACE:</td><td><input type="text" th:field="*{place}" /></h2><br /></td>
+          <td>PLACE:</td>
+          <td><input type="text" th:field="*{place}"/></h2><br/></td>
         </tr>
         <tr>
-          <td>DATE_OF_CRIME:</td><td><input type="date"  th:field="*{dateOfCrime}" /></td></tr>
+          <td>DATE_OF_CRIME:</td>
+          <td><input type="date" th:field="*{dateOfCrime}"/></td>
+        </tr>
         <tr>
           <td>DESCRIPTION:</td>
-          <td><input type="text" th:field="*{description}" /></td></tr>
+          <td><input type="text" th:field="*{description}"/></td>
+        </tr>
         <tr>
-          <td>SOLVED:</td><td> <select th:field="*{crimeSolved}">
-          <option value="true">Дело раскрыто</option>
-          <option value="false">Следствие продолжается</option>
-        </select>
-          </label></td></tr>
+          <td>SOLVED:</td>
+          <td><select th:field="*{crimeSolved}">
+            <option value="true">Дело раскрыто</option>
+            <option value="false">Следствие продолжается</option>
+          </select>
+            </label></td>
+        </tr>
         <tr>
-          <td>DANGER:</td><td>  <label>
-          <input type="radio" th:field="*{crimeDanger}" value="true" required="required">
-          Dangerous
-        </label>
-          <label>
-            <input type="radio" th:field="*{crimeDanger}" value="false" required="required">
-            Not Dangerous
-          </label></td></tr>
+          <td>DANGER:</td>
+          <td><label>
+            <input type="radio" th:field="*{crimeDanger}" value="true" required="required">
+            DANGEROUS
+          </label>
+            <label>
+              <input type="radio" th:field="*{crimeDanger}" value="false" required="required">
+              NOT DANGEROUS
+            </label></td>
+        </tr>
 
-          <input type="hidden" th:field="*{photoCrime}" /><br />
-          <input th:each="offender : ${crime.offenders}" type="hidden" th:value="${offender.offId}" name="offenders" />
-          <input type="hidden" th:field="*{crimeArchived}" /></label><br />
+        <input type="hidden" th:field="*{photoCrime}"/><br/>
+        <input th:each="offender : ${crime.offenders}" type="hidden" th:value="${offender.offId}"
+               name="offenders"/>
+        <input type="hidden" th:field="*{crimeArchived}"/></label><br/>
         <tr>
-          <td><input type="submit" value="Submit" class="action-button" /></td></tr>
+          <td><input type="submit" value="Submit" class="action-button"/></td>
+        </tr>
       </form>
       <tr>
-        <td><a th:href="@{/crime/{id}/add-offender(id=${crime.id})}" class="action-button">ADD OFFENDER</a></td>
+        <td><a th:href="@{/crime/{id}/add-offender(id=${crime.id})}" class="action-button">ADD
+          OFFENDER</a></td>
         <td colspan="2">
-          <form class="upload-form" th:action="@{/crime/{id}/uploadPhotoCrime(id=${crime.id})}" method="post" enctype="multipart/form-data">
+          <form class="upload-form" th:action="@{/crime/{id}/uploadPhotoCrime(id=${crime.id})}"
+                method="post" enctype="multipart/form-data">
             <label class="file-input-label">
               <input type="file" name="photoCrime" accept="image/*" class="file-input">
               <span class="file-input-text">SELECT PHOTO</span>
             </label>
-            <button type="submit" class="action-button">Upload Photo</button>
+            <button type="submit" class="action-button">UPLOAD PHOTO</button>
           </form>
         </td>
       </tr>
 
     </table>
+    <table class="table" style="border: none;">
+      <div class="error-message">
+        <div th:if="${validationErrors}" class="error-message">
+          <p>Error(s) found:</p>
+          <ul>
+            <li th:each="error : ${validationErrors}">
+              <span th:text="${error.defaultMessage}"></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </table>
   </div>
 
   <div class="right">
     <div class="photo-container">
-      <img th:if="${crime.photoCrime != null}" th:src="@{/crime/{id}/photoCrime(id=${crime.id})}" alt="Crime Photo" class="offender-photo">
+      <img th:if="${crime.photoCrime != null}" th:src="@{/crime/{id}/photoCrime(id=${crime.id})}"
+           alt="Crime Photo" class="offender-photo">
     </div>
   </div>
 </div>
-
 
 
 </div>
 </div>
 <div class="footer">
   <div class="footer-buttons">
-<a href="/crime"><h2>BACK TO CRIME LIST</h2></a>
-<a href="/"><h2>BACK TO MAIN</h2></a>
+    <a href="/crime"><h2>BACK TO CRIME LIST</h2></a>
+    <a href="/"><h2>BACK TO MAIN</h2></a>
   </div>
 </div>
 </body>

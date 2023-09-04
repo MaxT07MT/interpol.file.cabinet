@@ -34,15 +34,15 @@ public class CrimeServiceImpl implements CrimeService{
     return crimeRepository.findByCrimeArchivedTrue();
   }
 
-  @Override
-  public List<Crime> getByCrimeSolvedFalseOrCrimeSolvedIsNull() {
-    return crimeRepository.findByCrimeSolvedFalseOrCrimeSolvedIsNull();
-  }
+  //@Override
+  //public List<Crime> getByCrimeSolvedFalseOrCrimeSolvedIsNull() {
+    //return crimeRepository.findByCrimeSolvedFalseOrCrimeSolvedIsNull();
+  //}
 
-  @Override
-  public List<Crime> getByCrimeSolvedTrue() {
-    return crimeRepository.findByCrimeSolvedTrue();
-  }
+  //@Override
+  //public List<Crime> getByCrimeSolvedTrue() {
+    //return crimeRepository.findByCrimeSolvedTrue();
+  //}
 
   @Override
   public List<Crime> getByCrimeDangerFalseOrCrimeDangerIsNull() {
@@ -75,13 +75,18 @@ public class CrimeServiceImpl implements CrimeService{
     crimeRepository.deleteById(id);
   }
 
-  @Override
-  public List<Crime> getByCrimeDanger(Boolean crimeDanger) {
-    return crimeRepository.findByCrimeDanger(crimeDanger);
-  }
+  //@Override
+  //public List<Crime> getByCrimeDanger(Boolean crimeDanger) {
+   // return crimeRepository.findByCrimeDanger(crimeDanger);
+  //}
 
   @Override
   public List<Crime> getByDateOfCrimeBetween(Date startDate, Date endDate) {
     return crimeRepository.findByDateOfCrimeBetween(startDate, endDate);
+  }
+
+  @Override
+  public List<Crime> getByNameStartsWithIgnoreCase(String name) {
+    return crimeRepository.findByNameStartsWithIgnoreCase(name);
   }
 }

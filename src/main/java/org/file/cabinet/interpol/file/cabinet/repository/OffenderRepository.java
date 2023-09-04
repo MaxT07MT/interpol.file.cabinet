@@ -10,8 +10,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface OffenderRepository extends JpaRepository<Offender, Long> {
 
-  //List<Offender> findByGangId(long gangId);
   List<Offender> findByArchivedFalseOrArchivedIsNull();
+  List<Offender> findAll();
 
   List<Offender> findByArchivedTrue();
   List<Offender> findByFirstnameStartsWithIgnoreCase(String firstname);
