@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    .header {
+      background-color: blue;
+      padding: 6px;
+      text-align: right;
+    }
+
+    .logo {
+      font-size: 16px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .content {
+      display: flex;
+    }
+
+    .left {
+      flex: 1;
+      width: 50%;
+      padding: 2px;
+      box-sizing: border-box;
+    }
+
+    .right {
+      flex: 1;
+      width: 50%;
+      padding: 2px;
+      box-sizing: border-box;
+      text-align: right;
+    }
+
+
+    a {
+      color: white;
+      text-decoration: none;
+      margin-right: 20px;
+    }
+
+    .footer {
+      background-color: blue;
+      padding: 2px;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    .footer-buttons {
+      margin-top: 20px;
+      display: flex;
+    }
+
+    .footer-buttons a + a {
+      margin-left: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2px;
+    }
+
+    th, td {
+      border: 1px solid white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: blue;
+    }
+
+    .error-message {
+      background-color: red;
+      color: white;
+    }
+
+
+    .action-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: blue;
+      color: white;
+      border: 2px solid white;
+      border-radius: 50px;
+      text-align: center;
+      font-weight: bold;
+      text-transform: uppercase;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .action-button:hover {
+      background-color: white;
+      color: blue;
+    }
+
+  </style>
+
+  <title>Create Crime</title>
+</head>
+<body>
+<div class="header">
+  <div class="logo"><h1>CREATE CRIME</h1></div>
+</div>
+<div class="content">
+  <div class="left">
+    <table class="table" style="border: none;">
+      <form th:object="${crime}" th:action="${actionUrl}" method="post"
+            enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}"/>
+        <tr>
+          <td>NAME:</td>
+          <td><input type="text" th:field="*{name}"/></td>
+        </tr>
+        <tr>
+          <td>PLACE:</td>
+          <td><input type="text" th:field="*{place}"/></h2><br/></td>
+        </tr>
+        <tr>
+          <td>DATE_OF_CRIME:</td>
+          <td><input type="date" th:field="*{dateOfCrime}"/></td>
+        </tr>
+        <tr>
+          <td>DESCRIPTION:</td>
+          <td><input type="text" th:field="*{description}"/></td>
+        </tr>
+        <tr>
+          <td>SOLVED:</td>
+          <td><select th:field="*{crimeSolved}">
+            <option value="true">CRIME SOLVED</option>
+            <option value="false">CRIME NOT SOLVED</option>
+          </select>
+            </label></td>
+        </tr>
+        <tr>
+          <td>DANGER:</td>
+          <td><label>
+            <input type="radio" th:field="*{crimeDanger}" value="true" required="required">
+            Dangerous
+          </label>
+            <label>
+              <input type="radio" th:field="*{crimeDanger}" value="false" required="required">
+              Not Dangerous
+            </label></td>
+        </tr>
+
+        <input type="hidden" th:field="*{photoCrime}"/><br/>
+        <input th:each="offender : ${crime.offenders}" type="hidden" th:value="${offender.offId}"
+               name="offenders"/>
+        <input type="hidden" th:field="*{crimeArchived}"/></label><br/>
+        <tr>
+          <td><input type="submit" value="Submit" class="action-button"/></td>
+        </tr>
+      </form>
+    </table>
+  </div>
+
+  <div class="right">
+    <div class="error-message">
+      <div th:if="${validationErrors}" class="error-message">
+        <p>Error(s) found:</p>
+        <ul>
+          <li th:each="error : ${validationErrors}">
+            <span th:text="${error.defaultMessage}"></span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+</div>
+<div class="footer">
+  <div class="footer-buttons">
+    <a href="/crime"><h2>BACK TO CRIME LIST</h2></a>
+    <a href="/"><h2>BACK TO MAIN</h2></a>
+  </div>
+</div>
+</body>
+</html>

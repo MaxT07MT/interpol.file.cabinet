@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Add Offender to Crime</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    .header {
+      background-color: blue;
+      padding: 6px;
+      text-align: right;
+    }
+
+    .logo {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .content {
+      display: flex;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+      margin-right: 20px;
+    }
+
+    .footer {
+      background-color: blue;
+      padding: 2px;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    .footer-buttons {
+      margin-top: 20px;
+      display: flex;
+    }
+
+    .footer-buttons a + a {
+      margin-left: 20px;
+    }
+
+
+    table {
+      width: 50%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      align-content: center;
+    }
+
+    th, td {
+      border: 1px solid white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: blue;
+    }
+
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">ADD OFFENDER TO CRIME</div>
+</div>
+<div class="content">
+  <table class="table" align="center" style="border: none;">
+    <tr>
+      <td><h2>SELECT OFFENDER</h2></td>
+      <td><form th:action="@{/crime/{id}/add-offender(id=${crime.id})}" method="post">
+        <select name="offId">
+          <option th:each="offender : ${offenders}" th:value="${offender.offId}" th:text="${offender.firstname + ' ' + offender.lastname}"></option>
+        </select>
+        <button type="submit">ADD OFFENDER</button>
+      </form></td>
+    </tr>
+  </table>
+</div>
+<div class="footer">
+  <div class="footer-buttons">
+    <a th:href="@{/crime/{id}(id=${crime.id})}"><h2>BACK TO CRIME DETAILS</h2></a>
+  </div>
+</div>
+</body>
+</html>
+
