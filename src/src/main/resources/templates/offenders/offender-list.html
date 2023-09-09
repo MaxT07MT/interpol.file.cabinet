@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>OFFENDER LIST</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    .header {
+      background-color: blue;
+      padding: 6px;
+      text-align: right;
+    }
+
+    .logo {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .content {
+      display: flex;
+    }
+
+    .left {
+      flex: 1;
+      width: 50%;
+      padding: 2px;
+      box-sizing: border-box;
+    }
+
+    .right {
+      flex: 1;
+      width: 50%;
+      padding: 2px;
+      box-sizing: border-box;
+      text-align: right;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+      margin-right: 20px;
+    }
+
+    .footer {
+      background-color: blue;
+      padding: 2px;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    .footer-buttons {
+      margin-top: 20px;
+      display: flex;
+    }
+
+    .footer-buttons a + a {
+      margin-left: 20px;
+    }
+
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      border: 1px solid white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: blue;
+    }
+
+    .error-message {
+      background-color: red;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">OFFENDER LIST</div>
+</div>
+<div class="footer">
+  <div class="footer-buttons">
+    <a th:href="@{/offender/create}"><h2>CREATE NEW OFFENDER</h2></a>
+    <a th:href="@{/offender/searchPage}"><h2>SEARCH PAGE</h2></a>
+    <a href="/"><h2>BACK TO MAIN</h2></a>
+  </div>
+</div>
+<div class="content">
+  <div class="left">
+    <table>
+      <tr>
+        <th>NAME</th>
+        <th>STATUS</th>
+        <th>INFO</th>
+      </tr>
+      <tr th:each="offender, stat : ${offenders}" th:if="${stat.index % 2 == 0}">
+        <td th:text="${offender.firstname + ' ' + offender.lastname}"></td>
+        <td th:text="${offender.status}"></td>
+        <td>
+          <a th:href="@{/offender/{offId}(offId=${offender.offId})}">INFO</a>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="right">
+    <table>
+      <tr>
+        <th>NAME</th>
+        <th>STATUS</th>
+        <th>INFO</th>
+      </tr>
+      <tr th:each="offender, stat : ${offenders}" th:if="${stat.index % 2 != 0}">
+        <td th:text="${offender.firstname + ' ' + offender.lastname}"></td>
+        <td th:text="${offender.status}"></td>
+        <td>
+          <a th:href="@{/offender/{offId}(offId=${offender.offId})}">INFO</a>
+        </td>
+      </tr>
+
+    </table>
+  </div>
+</div>
+<div class="error-message">
+  <tr th:if="${deleteErrorMessage}" class="error-message">
+    <td colspan="3">
+      <p th:text="${deleteErrorMessage}"></p>
+    </td>
+  </tr>
+</div>
+<div class="footer">
+  <div class="footer-buttons">
+    <a th:href="@{/offender/create}"><h2>CREATE NEW OFFENDER</h2></a>
+    <a th:href="@{/offender/searchPage}"><h2>SEARCH PAGE</h2></a>
+    <a href="/"><h2>BACK TO MAIN</h2></a>
+  </div>
+</div>
+</body>
+</html>

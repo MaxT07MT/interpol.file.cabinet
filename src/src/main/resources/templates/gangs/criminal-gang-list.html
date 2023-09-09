@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Criminal Gangs List</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    .header {
+      background-color: blue;
+      padding: 6px;
+      text-align: right;
+    }
+
+    .logo {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 0;
+    }
+
+    .content {
+      display: flex;
+    }
+
+    .left {
+      flex: 1;
+      width: 50%;
+      padding: 2px;
+      box-sizing: border-box;
+    }
+
+    .right {
+      flex: 1;
+      width: 50%;
+      padding: 2px;
+      box-sizing: border-box;
+      text-align: right;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+      margin-right: 20px;
+    }
+
+    .footer {
+      background-color: blue;
+      padding: 2px;
+      text-align: center;
+      margin-top: 2px;
+    }
+
+    .footer-buttons {
+      margin-top: 20px;
+      display: flex;
+    }
+
+    .footer-buttons a + a {
+      margin-left: 20px;
+    }
+
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2px;
+    }
+
+    th, td {
+      border: 1px solid white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: blue;
+    }
+
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">CRIMINAL GANGS LIST</div>
+</div>
+<div class="content">
+  <div class="left">
+    <table>
+      <tr>
+        <th>NAME</th>
+        <th>INFO</th>
+      </tr>
+      <tr th:each="gang, stat : ${criminalGangs}" th:if="${__${stat.index}__ % 2 == 0}">
+        <td th:text="${gang.name}"></td>
+        <td>
+          <a th:href="@{/criminalGang/{id}(id=${gang.id})}">INFO</a>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="right">
+    <table>
+      <tr>
+        <th>NAME</th>
+        <th>INFO</th>
+      </tr>
+      <tr th:each="gang, stat : ${criminalGangs}" th:if="${__${stat.index}__ % 2 != 0}">
+        <td th:text="${gang.name}"></td>
+        <td>
+          <a th:href="@{/criminalGang/{id}(id=${gang.id})}">INFO</a>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer-buttons">
+    <a th:href="@{/criminalGang/create}"><h2>CREATE NEW GANG</h2></a>
+    <a href="/criminalGang/searchPage"><h2>SEARCH PAGE</h2></a>
+    <a href="/"><h2>BACK TO MAIN</h2></a>
+  </div>
+</div>
+</body>
+</html>
